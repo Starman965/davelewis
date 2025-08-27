@@ -60,7 +60,7 @@
       <span class="pill">Round <span id="roundNum">1</span>/<span id="roundsPlanned">16</span></span>
       <span class="pill">Prize: $<span id="roundPrize">5</span></span>
       <button class="btn" id="rulesBtn">Rules</button>
-      <button class="btn ok" id="startBtn">▶ Start Round</button>
+
       <button class="btn danger" id="newMatchBtn">Reset Game</button>
     </div>
   </header>
@@ -113,7 +113,10 @@
       </div>
 
       <div class="cases" id="cases">
-        <div class="idle-msg" id="idleMsg">Tap <b>Start Round</b> to set the board, then open your first case to start the timer.</div>
+        <div class="idle-msg" id="idleMsg">
+          <div style="margin-bottom: 16px;">Ready to start the round?</div>
+          <button class="btn ok" id="startBtn">▶ Start Round</button>
+        </div>
       </div>
 
       <div class="foot-controls">

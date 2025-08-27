@@ -227,8 +227,23 @@ function renderBoard(){
   if (!state.started){
     const d = document.createElement('div');
     d.className = 'idle-msg';
-    d.textContent = `Tap Start Round to set the board, then open your first case to start the timer.`;
+    d.innerHTML = `
+      <div style="margin-bottom: 16px;">Ready to start the round?</div>
+      <button class="btn ok" id="startBtn">▶ Start Round</button>
+    `;
     el.cases.appendChild(d);
+    
+    // Re-attach the event listener since we just created a new button
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) {
+      startBtn.addEventListener('click', ()=> { 
+        ensureAudio(); 
+        if (!state.started) { 
+          startRoundPlay(); 
+        } 
+      });
+    }
+    
     renderAskButton();
     return renderScores();
   }
@@ -565,13 +580,18 @@ function openMiniBonusCases(){
   stopTimer(); // ensure timer is stopped while modal is up
   const couple = CONFIG.couples[state.currentTeam];
   el.miniTitle.textContent = 'Mini-Game: Bonus Cases';
-  el.miniIntro.textContent = `BradGPT™: ${couple} Couple, pick one of 4 bonus cases!`;
-el.miniArea.innerHTML = `
+  el.miniIntro.textContent = `BradGPT™: ${couple} Team, pick one of 4 bonus cases!`;
+  
+  // Create randomized values for the 4 cases
+  const possibleValues = [-20, -10, 0, 10, 20, 30, 40, 50, 60];
+  const shuffledValues = shuffle([...possibleValues]).slice(0, 4);
+  
+  el.miniArea.innerHTML = `
     <div class="row">
-      <button class="btn" data-bonus="-20">CASE 1</button>
-      <button class="btn" data-bonus="20">CASE 2</button>
-      <button class="btn" data-bonus="40">CASE 3</button>
-      <button class="btn" data-bonus="60">CASE 4</button>
+      <button class="btn" data-bonus="${shuffledValues[0]}">CASE 1</button>
+      <button class="btn" data-bonus="${shuffledValues[1]}">CASE 2</button>
+      <button class="btn" data-bonus="${shuffledValues[2]}">CASE 3</button>
+      <button class="btn" data-bonus="${shuffledValues[3]}">CASE 4</button>
     </div>`;
   el.miniButtons.innerHTML = '';
   el.miniArea.querySelectorAll('button').forEach(b=>{
@@ -858,7 +878,7 @@ function setupIntro(){
 ============================= */
 
 el.bankBtn.addEventListener('click', ()=> doBank(true));
-el.startBtn.addEventListener('click', ()=>{ ensureAudio(); if (!state.started){ startRoundPlay(); } });
+// Start button event listener is now handled dynamically in renderBoard()
 el.nextRoundBtn.addEventListener('click', startNextRound);
 el.closeRoundBtn.addEventListener('click', ()=> closeOverlay(el.roundOverlay));
 el.playAgainBtn.addEventListener('click', ()=> { closeOverlay(el.finalOverlay); newMatch(); });
